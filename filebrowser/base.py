@@ -345,6 +345,12 @@ class FileObject():
     # orientation
 
     _dimensions_stored = None
+
+    @property
+    def copyright(self):
+        "Copyright for image"
+        return "Woo copyright"
+
     @property
     def dimensions(self):
         "Image dimensions as a tuple"
