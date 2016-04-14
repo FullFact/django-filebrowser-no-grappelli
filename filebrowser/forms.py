@@ -63,7 +63,6 @@ class ChangeForm(forms.Form):
         self.site = kwargs.pop("filebrowser_site", None)
         super(ChangeForm, self).__init__(*args, **kwargs)
 
-        import pdb; pdb.set_trace()
         # Initialize choices of custom action
         choices = [("", u"-----")]
         for name, action in self.site.applicable_actions(self.fileobject):
