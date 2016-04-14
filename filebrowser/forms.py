@@ -53,7 +53,7 @@ class ChangeForm(forms.Form):
     """
     Form for renaming a file/folder.
     """
-
+    copyright = forms.CharField(widget=forms.TextInput(attrs=dict({'class': 'vTextField'}, max_length=50, min_length=3)), label=_(u'Copyright'), required=False)
     custom_action = forms.ChoiceField(label=_(u'Actions'), required=False)
     name = forms.CharField(widget=forms.TextInput(attrs=dict({'class': 'vTextField'}, max_length=50, min_length=3)), label=_(u'Name'), help_text=_(u'Only letters, numbers, underscores, spaces and hyphens are allowed.'), required=True)
 
@@ -63,11 +63,21 @@ class ChangeForm(forms.Form):
         self.site = kwargs.pop("filebrowser_site", None)
         super(ChangeForm, self).__init__(*args, **kwargs)
 
+        import pdb; pdb.set_trace()
         # Initialize choices of custom action
         choices = [("", u"-----")]
         for name, action in self.site.applicable_actions(self.fileobject):
             choices.append((name, action.short_description))
         self.fields['custom_action'].choices = choices
+        
+        image_copyright = self.fileobject.copyright
+        if image_copyright is None:
+            self.fields['copyright'].initial = ""
+        elif not image_copyright:
+           self.fields['copyright'].initial = "Copyright information cannot be added to this filetype, try uploading as a jpg"
+        else:
+            self.fields['copyright'].initial = image_copyright
+
 
     def clean_name(self):
         "validate name"

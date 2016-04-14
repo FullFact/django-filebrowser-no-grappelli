@@ -54,6 +54,13 @@
                 <div class="form-row {% if form.custom_action.errors %}errors{% endif %}">
                     {% if form.custom_action.errors %}{{ form.custom_action.errors }}{% endif %}
                     <div>
+                        <label class="required" for="id_custom_action">{{ form.copyright.label }}</label>
+                        {{ form.copyright }}
+                        {% if form.copyright.help_text %}<p class="help">{{ form.copyright.help_text|safe }}</p>{% endif %}
+                    </div>
+                </div>
+                <div class="form-row {% if form.custom_action.errors %}errors{% endif %}">
+                    <div>
                         <label class="required" for="id_custom_action">{{ form.custom_action.label }}</label>
                         {{ form.custom_action }}
                         {% if form.custom_action.help_text %}<p class="help">{{ form.custom_action.help_text|safe }}</p>{% endif %}
@@ -107,20 +114,6 @@
                             <p>
                                 {{ fileobject.width }} x {{ fileobject.height }} px
                             </p>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label>{% trans "Copyright" %}</label>
-                            {% if fileobject.copyright == None %}
-                            <p>No copyright information available :(</p>
-                            {% elif not fileobject.copyright %}
-                            <p>Copyright information cannot be stored in this filetype, try uploading as a jpg</p>
-                            {% else %} 
-                            <p>
-                                {{ fileobject.copyright }}
-                            </p>
-                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
