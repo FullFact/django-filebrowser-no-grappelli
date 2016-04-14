@@ -350,12 +350,14 @@ class FileObject():
     @property
     def copyright(self):
         "Copyright for image"
-        exif = piexif.load(self.path_full)['0th']
-        try:
-            copyright = exif[33432]    # This is apparently the number you have to use, not sure why
-        except Exception as e:
-            copyright = 'No copyright information :('
-
+        if self.extension in ['.jpg', '.jpeg', '.tiff']:
+            exif = piexif.load(self.path_full)['0th']
+            try:
+                copyright = exif[33432]    # This is apparently the number you have to use, not sure why
+            except Exception as e:
+                copyright = None
+        else:
+            copyright = False
         return copyright
 
     @property

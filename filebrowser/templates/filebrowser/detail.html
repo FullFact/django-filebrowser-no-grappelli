@@ -112,9 +112,15 @@
                     <div class="form-row">
                         <div>
                             <label>{% trans "Copyright" %}</label>
+                            {% if fileobject.copyright == None %}
+                            <p>No copyright information available :(</p>
+                            {% elif not fileobject.copyright %}
+                            <p>Copyright information cannot be stored in this filetype, try uploading as a jpg</p>
+                            {% else %} 
                             <p>
                                 {{ fileobject.copyright }}
                             </p>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
