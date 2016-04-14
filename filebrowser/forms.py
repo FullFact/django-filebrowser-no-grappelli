@@ -74,7 +74,8 @@ class ChangeForm(forms.Form):
         if image_copyright is None:
             self.fields['copyright'].initial = ""
         elif not image_copyright:
-           self.fields['copyright'].initial = "Copyright information cannot be added to this filetype, try uploading as a jpg"
+           self.fields['copyright'].widget.attrs['readonly'] = True
+           self.fields['copyright'].help_text = "Copyright information cannot be added to this filetype, try uploading as a jpg"
         else:
             self.fields['copyright'].initial = image_copyright
 
