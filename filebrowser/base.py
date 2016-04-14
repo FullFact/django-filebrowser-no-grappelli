@@ -8,6 +8,7 @@ import platform
 import mimetypes
 from tempfile import NamedTemporaryFile
 import warnings
+import piexif
 
 # DJANGO IMPORTS
 from django.core.files import File
@@ -349,7 +350,13 @@ class FileObject():
     @property
     def copyright(self):
         "Copyright for image"
-        return "Woo copyright"
+        exif = piexif.load(self.path_full)['0th']
+        try:
+            copyright = exif[33432]    # This is apparently the number you have to use, not sure why
+        except Exception as e:
+            copyright = 'No copyright information :('
+
+        return copyright
 
     @property
     def dimensions(self):
