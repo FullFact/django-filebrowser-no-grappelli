@@ -7,6 +7,8 @@ from time import gmtime
 from time import strftime
 from time import localtime
 from time import time
+from PIL import Image
+import piexif
 
 # DJANGO IMPORTS
 from django import VERSION as DJANGO_VERSION
@@ -478,6 +480,7 @@ class FileBrowserSite(object):
             if form.is_valid():
                 new_name = form.cleaned_data['name']
                 action_name = form.cleaned_data['custom_action']
+                new_copyright = form.cleaned_data['copyright']
                 try:
                     action_response = None
                     if action_name:
@@ -494,6 +497,18 @@ class FileBrowserSite(object):
                         self.storage.move(fileobject.path, os.path.join(fileobject.head, new_name))
                         signals.filebrowser_post_rename.send(sender=request, path=fileobject.path, name=fileobject.filename, new_name=new_name, site=self)
                         messages.add_message(request, messages.SUCCESS, _('Renaming was successful.'))
+                    if new_copyright != fileobject.copyright:
+                        filepath = fileobject.path_full
+                        image = Image.open(filepath)
+                        try:
+                            exif_dict = piexif.load(image.info["exif"])
+                        except KeyError:
+                            exif_dict = {"0th": {}}
+                        # This number is apparently significant in some way?
+                        exif_dict["0th"][33432] = new_copyright
+                        exif_bytes = piexif.dump(exif_dict)
+                        image.save(filepath, exif=exif_bytes)
+                        messages.add_message(request, messages.SUCCESS, _('Copyright change was successful.'))
                     if isinstance(action_response, HttpResponse):
                         return action_response
                     if "_continue" in request.POST:
