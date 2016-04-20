@@ -69,6 +69,11 @@ class ChangeForm(forms.Form):
         for name, action in self.site.applicable_actions(self.fileobject):
             choices.append((name, action.short_description))
         self.fields['custom_action'].choices = choices
+
+        if self.fileobject.alamy == 'alamy':
+            self.fields['alamy'].initial = True
+        else:
+            self.fields['alamy'].initial = False
         
         image_copyright = self.fileobject.copyright
         if image_copyright is None:

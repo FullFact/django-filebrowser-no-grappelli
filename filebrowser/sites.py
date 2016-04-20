@@ -465,6 +465,23 @@ class FileBrowserSite(object):
         redirect_url = reverse("filebrowser:fb_browse", current_app=self.name) + query_helper(query, "", "filename,filetype")
         return HttpResponseRedirect(redirect_url)
 
+    def save_copyright(self, image, filepath, copyright=False, alamy=None):
+        try:
+            exif_dict = piexif.load(image.info["exif"])
+        except KeyError:
+            exif_dict = {"0th": {}}
+        # 33432 is the position of the copyright data
+        if copyright:
+            exif_dict["0th"][33432] = copyright
+        elif alamy is not None:
+            if alamy:
+                exif_dict["0th"][270] = 'alamy'
+            else:
+                exif_dict["0th"][270] = ''
+
+        exif_bytes = piexif.dump(exif_dict)
+        image.save(filepath, exif=exif_bytes)
+        
     def detail(self, request):
         """
         Show detail page for a file.
@@ -481,6 +498,11 @@ class FileBrowserSite(object):
                 new_name = form.cleaned_data['name']
                 action_name = form.cleaned_data['custom_action']
                 new_copyright = form.cleaned_data['copyright']
+                if form.cleaned_data['alamy']:
+                    new_alamy = 'alamy'
+                else:
+                    new_alamy = False
+
                 try:
                     action_response = None
                     if action_name:
@@ -497,18 +519,16 @@ class FileBrowserSite(object):
                         self.storage.move(fileobject.path, os.path.join(fileobject.head, new_name))
                         signals.filebrowser_post_rename.send(sender=request, path=fileobject.path, name=fileobject.filename, new_name=new_name, site=self)
                         messages.add_message(request, messages.SUCCESS, _('Renaming was successful.'))
+
+                    filepath = fileobject.path_full
+                    image = Image.open(filepath)
                     if new_copyright != fileobject.copyright:
-                        filepath = fileobject.path_full
-                        image = Image.open(filepath)
-                        try:
-                            exif_dict = piexif.load(image.info["exif"])
-                        except KeyError:
-                            exif_dict = {"0th": {}}
-                        # This number is apparently significant in some way?
-                        exif_dict["0th"][33432] = new_copyright
-                        exif_bytes = piexif.dump(exif_dict)
-                        image.save(filepath, exif=exif_bytes)
+                        self.save_copyright(image, filepath, copyright=new_copyright)
                         messages.add_message(request, messages.SUCCESS, _('Copyright change was successful.'))
+                    if new_alamy != fileobject.alamy:
+                        self.save_copyright(image, filepath, alamy=new_alamy)
+                        messages.add_message(request, messages.SUCCESS, _('Alamy change was successful.'))
+                    
                     if isinstance(action_response, HttpResponse):
                         return action_response
                     if "_continue" in request.POST:

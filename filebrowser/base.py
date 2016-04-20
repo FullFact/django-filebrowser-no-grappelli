@@ -347,19 +347,34 @@ class FileObject():
 
     _dimensions_stored = None
 
-    @property
-    def copyright(self):
-        "Copyright for image"
+    def _get_exif_data(self, type):
+        if type == "copyright":
+            position = 33432
+        elif type == "alamy":
+            position = 270
+
         if self.extension in ['.jpg', '.jpeg', '.tiff']:
             exif = piexif.load(self.path_full)['0th']
             try:
-                copyright = exif[33432]    # This is apparently the number you have to use, not sure why
+                data = exif[position].decode('utf-8')
             except Exception as e:
-                copyright = None
+                if type == "copyright":
+                    data = None
+                elif type == "alamy":
+                    data = False
         else:
-            copyright = False
-        return copyright
+            data = False
+        return data
 
+    @property
+    def copyright(self):
+        "Copyright for image"
+        return self._get_exif_data('copyright')    
+    @property
+    def alamy(self):
+        "If the image is from Alamy"
+        return self._get_exif_data('alamy')
+    
     @property
     def dimensions(self):
         "Image dimensions as a tuple"
