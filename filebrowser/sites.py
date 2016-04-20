@@ -471,7 +471,7 @@ class FileBrowserSite(object):
         except KeyError:
             exif_dict = {"0th": {}}
         # 33432 is the position of the copyright data
-        if copyright:
+        if copyright or copyright == '':
             exif_dict["0th"][33432] = copyright
         elif alamy is not None:
             if alamy:

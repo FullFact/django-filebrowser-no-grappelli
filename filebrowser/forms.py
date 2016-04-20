@@ -76,7 +76,7 @@ class ChangeForm(forms.Form):
             self.fields['alamy'].initial = False
         
         image_copyright = self.fileobject.copyright
-        if image_copyright is None:
+        if image_copyright is None or image_copyright == '':
             self.fields['copyright'].initial = ""
         elif not image_copyright:
            self.fields['copyright'].widget.attrs['disabled'] = True
