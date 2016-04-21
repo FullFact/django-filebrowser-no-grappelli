@@ -474,10 +474,7 @@ class FileBrowserSite(object):
         if copyright or copyright == '':
             exif_dict["0th"][33432] = copyright
         elif alamy is not None:
-            if alamy:
-                exif_dict["0th"][270] = 'alamy'
-            else:
-                exif_dict["0th"][270] = ''
+            exif_dict["0th"][270] = alamy
 
         exif_bytes = piexif.dump(exif_dict)
         image.save(filepath, exif=exif_bytes)
@@ -501,7 +498,7 @@ class FileBrowserSite(object):
                 if form.cleaned_data['alamy']:
                     new_alamy = 'alamy'
                 else:
-                    new_alamy = False
+                    new_alamy = ''
 
                 try:
                     action_response = None
