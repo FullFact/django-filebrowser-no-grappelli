@@ -7,6 +7,7 @@
 {% block extrastyle %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "filebrowser/css/alamy.css" %}" />
 {% endblock %}
 
 <!-- JAVASCRIPTS -->
@@ -53,19 +54,16 @@
                 <h2>{% trans "Edit" %}</h2>
                 <div class="form-row {% if form.custom_action.errors %}errors{% endif %}">
                     {% if form.copyright.errors %}{{ form.copyright.errors }}{% endif %}
-                    <div>
-                        <label class="required" for="id_custom_action">{{ form.copyright.label }}</label>
-                        {{ form.copyright }}
-                        {% if form.copyright.help_text %}<p class="help">{{ form.copyright.help_text|safe }}</p>{% endif %}
-                    </div>
-                </div>
-                <div class="form-row {% if form.custom_action.errors %}errors{% endif %}">
                     {% if form.alamy.errors %}{{ form.alamy.errors }}{% endif %}
                     <div>
                         <label class="required" for="id_custom_action">{{ form.alamy.label }}</label>
                         {{ form.alamy }}
-                        {% if form.alamy.help_text %}<p class="help">{{ form.alamy.help_text|safe }}</p>{% endif %}
+
+                        <label class="required" for="id_custom_action">{{ form.copyright.label }}</label>
+                        {{ form.copyright }}
                     </div>
+                    {% if form.alamy.help_text %}<p class="help">{{ form.alamy.help_text|safe }}</p>{% endif %}
+                    {% if form.copyright.help_text %}<p class="help">{{ form.copyright.help_text|safe }}</p>{% endif %}
                 </div>
                 <div class="form-row {% if form.custom_action.errors %}errors{% endif %}">
                     {% if form.custom_action.errors %}{{ form.custom_action.errors }}{% endif %}

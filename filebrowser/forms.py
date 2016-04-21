@@ -56,7 +56,7 @@ class ChangeForm(forms.Form):
     copyright = forms.CharField(widget=forms.TextInput(attrs=dict({'class': 'vTextField'}, max_length=50, min_length=3)), label=_(u'Copyright'), required=False)
     custom_action = forms.ChoiceField(label=_(u'Actions'), required=False)
     name = forms.CharField(widget=forms.TextInput(attrs=dict({'class': 'vTextField'}, max_length=50, min_length=3)), label=_(u'Name'), help_text=_(u'Only letters, numbers, underscores, spaces and hyphens are allowed.'), required=True)
-    alamy = forms.BooleanField(label=_(u'Alamy'), required=False)
+    alamy = forms.BooleanField(label=_(u'Alamy'), required=False, help_text="Tick the box for Alamy images, to show the default Alamy credit. Custom copyright will only show if Alamy is not selected.")
 
     def __init__(self, *args, **kwargs):
         self.path = kwargs.pop("path", None)
